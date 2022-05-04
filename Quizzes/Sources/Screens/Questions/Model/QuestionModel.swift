@@ -39,7 +39,15 @@ struct Description: Codable {
 // MARK: - QuestionElement
 struct QuestionElement: Codable {
     let question: String
+    let idQuestion: Int
     let answers: [Answer]
+    var check: Bool?
+    
+    enum CodingKeys: String, CodingKey {
+        case question
+        case idQuestion = "id_question"
+        case answers
+    }
 }
 
 // MARK: - Answer

@@ -68,6 +68,8 @@ class ProviderMock: QuizzesNetworkProtocol {
             return getQuizzesHome
         case .questions:
             return postQuestions
+        case .result:
+            return postResult
         }
     }
 }

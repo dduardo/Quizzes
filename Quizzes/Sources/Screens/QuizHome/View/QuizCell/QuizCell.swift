@@ -21,10 +21,10 @@ final class QuizCell: UITableViewCell, Identifiable {
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 80),
-            imageView.heightAnchor.constraint(equalToConstant: 80)
-        ])
+//        NSLayoutConstraint.activate([
+//            imageView.widthAnchor.constraint(equalToConstant: 80),
+//            imageView.heightAnchor.constraint(equalToConstant: 80)
+//        ])
 
         return imageView
     }()
@@ -33,7 +33,7 @@ final class QuizCell: UITableViewCell, Identifiable {
         let label = UILabel()
         label.textAlignment = .left
         label.numberOfLines = .zero
-        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.font = .appBoldFont(ofSize: .subTitle)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
 
@@ -58,19 +58,9 @@ final class QuizCell: UITableViewCell, Identifiable {
         let label = UILabel()
         label.numberOfLines = .zero
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = .appRegularFont(ofSize: .normal)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
-
-        return label
-    }()
-
-    private lazy var labelAction: UILabel = {
-        let label = UILabel()
-        label.text = String()
-        label.numberOfLines = .zero
-        label.textAlignment = .left
-        label.translatesAutoresizingMaskIntoConstraints = false
 
         return label
     }()
@@ -92,6 +82,8 @@ final class QuizCell: UITableViewCell, Identifiable {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
+        
+        setupView()
     }
 
     required init?(coder: NSCoder) {
@@ -113,30 +105,20 @@ final class QuizCell: UITableViewCell, Identifiable {
     
     override func draw(_ rect: CGRect) {
         roundImageView.image = UIImage.init(named: "panela")
-        roundImageView.layer.borderWidth = 1
-        roundImageView.layer.masksToBounds = false
-        roundImageView.layer.borderColor = UIColor.black.cgColor
-        roundImageView.layer.cornerRadius = roundImageView.frame.height / 2
-        roundImageView.clipsToBounds = true
+        roundImageView.circularImage()
     }
 }
 
-extension QuizCell {
-    
-    private func setupView() {
-        setupHierarchy()
-        setupConstraints()
-        setupConfigurations()
-    }
-    
-    private func setupHierarchy() {
+extension QuizCell: ViewCode {
+
+    func setupHierarchy() {
         contentView.addSubview(roundImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(labelDescription)
 //        contentView.addSubview(imageViewRightArrow)
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         setupContentViewConstraints()
         setupRoundImageViewConstraints()
         setupLabelTitleConstraints()
@@ -144,7 +126,7 @@ extension QuizCell {
 //        setupImageViewRightArrowConstraints()
     }
     
-    private func setupConfigurations() {
+    func setupConfigurations() {
         selectionStyle = .none
     }
     
@@ -154,7 +136,7 @@ extension QuizCell {
             contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: 120)
+            contentView.heightAnchor.constraint(equalToConstant: 90)
         ])
     }
     
@@ -165,7 +147,12 @@ extension QuizCell {
 
     private func setupRoundImageViewConstraints() {
         NSLayoutConstraint.activate([
-            roundImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            roundImageView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
+
+            roundImageView.heightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.heightAnchor, multiplier: 1.0 / 1.5),
+
+            roundImageView.widthAnchor.constraint(equalTo: roundImageView.heightAnchor),
+
             roundImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
         ])
     }

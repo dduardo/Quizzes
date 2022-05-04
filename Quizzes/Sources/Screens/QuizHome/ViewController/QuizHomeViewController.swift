@@ -21,6 +21,8 @@ final class QuizHomeViewController: UIViewController {
         tableView.register(QuizCell.self, forCellReuseIdentifier: "QuizCell")
         tableView.estimatedRowHeight = 120
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorStyle = .singleLine
+
         return tableView
     }()
 
@@ -39,6 +41,8 @@ final class QuizHomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Quizzes"
+        
         setupUI()
         bindViewModel()
         viewModel.fetchList()
@@ -71,10 +75,8 @@ final class QuizHomeViewController: UIViewController {
     // MARK - Private Methods
 
     private func setupUI() {
-//        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
 
-//        setupLabel()
         setupTableView()
     }
 
@@ -83,14 +85,9 @@ final class QuizHomeViewController: UIViewController {
         tableView.delegate = self
 
         view.addSubview(tableView)
-        
-//        tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 32.0).isActive = true
-//        tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 120.0).isActive = true
-//        tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -32.0).isActive = true
-//        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32.0).isActive = true
 
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)

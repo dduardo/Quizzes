@@ -34,6 +34,7 @@ class TabBarCoordinator: NSObject, Coordinator {
     required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.tabBarController = .init()
+        tabBarController.navigationItem.title = "Fuzz beed"
     }
 
     func start() {

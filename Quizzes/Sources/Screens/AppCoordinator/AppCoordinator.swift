@@ -38,6 +38,11 @@ class AppCoordinator: AppCoordinatorProtocol {
     
     func showMainFlow() {
         // Implementation Main (Tab bar) FLow
+//        let tabCoordinator = SuccessCoordinator.init(navigationController)
+//        tabCoordinator.finishDelegate = self
+//        tabCoordinator.start()
+//        childCoordinators.append(tabCoordinator)
+        
         finish()
         let tabCoordinator = TabBarCoordinator.init(navigationController)
         tabCoordinator.finishDelegate = self

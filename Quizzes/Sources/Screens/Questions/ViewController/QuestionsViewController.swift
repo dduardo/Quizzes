@@ -63,7 +63,7 @@ final class QuestionsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = false
+        title = "Questions"
     }
     
     override func viewDidLoad() {
@@ -76,10 +76,7 @@ final class QuestionsViewController: UIViewController {
     // MARK: - Bind View Model
 
     private func bindViewModel() {
-//        bindShimmerLoading()
         bindPostResponseCallBack()
-//        bindButtonLoading()
-//        bindPostReponseCallBack()
     }
     
     private func bindPostResponseCallBack() {

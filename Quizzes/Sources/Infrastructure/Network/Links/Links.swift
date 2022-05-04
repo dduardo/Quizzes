@@ -12,4 +12,5 @@ import Foundation
 enum Links: String {
     case quizHome = "home"
     case questions = "questions"
+    case result = "result"
 }
