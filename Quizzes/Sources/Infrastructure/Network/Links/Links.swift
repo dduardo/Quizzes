@@ -10,7 +10,7 @@ import Foundation
 // MARK: Links Enum
 
 enum Links: String {
-    case quizHome = "home"
-    case questions = "questions"
-    case result = "result"
+    case quizHome = "quizHome"
+    case questions = "quiz"
+    case result = "quizResult"
 }

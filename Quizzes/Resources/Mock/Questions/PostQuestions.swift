@@ -18,7 +18,7 @@ var postQuestions: Data = """
     },
     "questions": [
         {
-            "question": "Qual seu personagem favorito?",
+            "question": "Qual seu personagem favorito? 0 ",
             "id_question": 1,
             "answers": [
                 {
@@ -44,7 +44,7 @@ var postQuestions: Data = """
             ]
         },
         {
-            "question": "Qual seu personagem favorito2?",
+            "question": "Qual seu personagem favorito? 1",
             "id_question": 2,
             "answers": [
                 {
@@ -70,7 +70,7 @@ var postQuestions: Data = """
             ]
         },
         {
-            "question": "Qual seu personagem favorito3?",
+            "question": "Qual seu personagem favorito? 2",
             "id_question": 3,
             "answers": [
                 {

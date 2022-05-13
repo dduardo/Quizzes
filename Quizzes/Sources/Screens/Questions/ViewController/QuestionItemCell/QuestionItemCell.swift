@@ -8,7 +8,14 @@
 import Foundation
 import UIKit
 
+
+protocol QuestionItemCellDelegate: AnyObject {
+    func choose(value: Int)
+}
+
 final class QuestionItemCell: UIView, Identifiable {
+    
+    private var delegate: QuestionItemCellDelegate
     
     private var answer: Answer
     
@@ -21,6 +28,7 @@ final class QuestionItemCell: UIView, Identifiable {
         view.layer.masksToBounds = false
         view.layer.borderColor = UIColor.darkGray.cgColor.copy(alpha: 1)
     
+        
         return view
     }()
 
@@ -35,8 +43,8 @@ final class QuestionItemCell: UIView, Identifiable {
     private lazy var answerLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = .cultured
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Panela asdasdas asdasdas"
         label.textAlignment = .center
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = .zero
@@ -44,8 +52,9 @@ final class QuestionItemCell: UIView, Identifiable {
         return label
     }()
     
-    init(with answer: Answer) {
+    init(with answer: Answer, delegate: QuestionItemCellDelegate) {
         self.answer = answer
+        self.delegate = delegate
         super.init(frame: .zero)
         setupView()
     }
@@ -96,5 +105,12 @@ extension QuestionItemCell: ViewCode {
     
     func setupConfigurations() {
         answerLabel.text = answer.option
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        contentView.addGestureRecognizer(tap)
+    }
+    
+    @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+        delegate.choose(value: answer.value)
     }
 }

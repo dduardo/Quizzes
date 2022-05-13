@@ -10,10 +10,19 @@ import Foundation
 // MARK: - QuestionModel
 
 struct QuestionModel: Codable {
+    let errors: [String]?
+    let data: Quiz?
+}
+
+struct Quiz: Codable {
+    let idQuiz: String
+    let idQuizHome: String
     let questionDescription: Description
     let questions: [QuestionElement]
 
     enum CodingKeys: String, CodingKey {
+        case idQuiz = "id_quiz"
+        case idQuizHome = "id_quiz_home"
         case questionDescription = "description"
         case questions
     }
@@ -21,14 +30,12 @@ struct QuestionModel: Codable {
 
 // MARK: - Description
 struct Description: Codable {
-    let idQuiz: Int
     let group: String
     let image: String
     let headline: String
     let descriptionDescription: String
 
     enum CodingKeys: String, CodingKey {
-        case idQuiz = "id_quiz"
         case group
         case image
         case headline
@@ -39,7 +46,7 @@ struct Description: Codable {
 // MARK: - QuestionElement
 struct QuestionElement: Codable {
     let question: String
-    let idQuestion: Int
+    let idQuestion: String
     let answers: [Answer]
     var check: Bool?
     

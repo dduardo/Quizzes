@@ -40,8 +40,9 @@ enum Pages: CaseIterable {
     }
 }
 
-protocol PageVCDelegate: class {
+protocol PageVCDelegate: AnyObject {
     func showSuccess()
+    func chosenItem(id: String, answerValue: Int)
 }
 
 final class PageControlViewController: UIViewController {
@@ -55,16 +56,17 @@ final class PageControlViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 8.0
-        view.backgroundColor = .orange
+        view.backgroundColor = .venetianRed
         
         return view
     }()
     
     private lazy var questionlabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .left
+        label.textAlignment = .center
         label.numberOfLines = .zero
         label.font = .appRegularFont(ofSize: .normal)
+        label.textColor = .cultured
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
         
@@ -75,7 +77,7 @@ final class PageControlViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 8.0
-        view.backgroundColor = .blue
+        view.backgroundColor = .cultured
         
         return view
     }()
@@ -116,31 +118,28 @@ final class PageControlViewController: UIViewController {
     private let steadyButton: UIButton = {
         let button = UIButton()
         button.setTitle("Validar", for: .normal)
-        button.backgroundColor = .systemYellow
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .venetianRed
+        button.setTitleColor(.cultured, for: .normal)
         button.layer.cornerRadius = 8.0
         button.isHidden = true
         
         return button
     }()
     
-    init(with questionElement: QuestionElement, page: Pages, isLast: Bool = false) {
+    init(with page: Pages,
+         isLast: Bool = false,
+         questionElement: QuestionElement) {
         self.questionElement = questionElement
         self.page = page
         self.isLast = isLast
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = .white
+        view.backgroundColor = .cultured
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    deinit {
-        // callback para limpar a pilha de controller n coordinator
-        print("PageControlViewController deinit")
-    }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -182,21 +181,20 @@ extension PageControlViewController: ViewCode {
         ])
         
         NSLayoutConstraint.activate([
-            horizontalStackView.topAnchor.constraint(equalTo: contentQuestionsView.topAnchor),
+            horizontalStackView.topAnchor.constraint(equalTo: contentQuestionsView.topAnchor, constant: 8),
             horizontalStackView.leadingAnchor.constraint(equalTo: contentQuestionsView.leadingAnchor),
             horizontalStackView.trailingAnchor.constraint(equalTo: contentQuestionsView.trailingAnchor),
             horizontalStackView.bottomAnchor.constraint(equalTo: contentQuestionsView.bottomAnchor, constant: -90)
-//            horizontalStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 200)
         ])
         
-        verticalStackView.addArrangedSubview(QuestionItemCell(with: questionElement.answers[0]))
-        verticalStackView.addArrangedSubview(QuestionItemCell(with: questionElement.answers[1]))
-        verticalStackView2.addArrangedSubview(QuestionItemCell(with: questionElement.answers[2]))
-        verticalStackView2.addArrangedSubview(QuestionItemCell(with: questionElement.answers[3]))
+        verticalStackView.addArrangedSubview(QuestionItemCell(with: questionElement.answers[0], delegate: self))
+        verticalStackView.addArrangedSubview(QuestionItemCell(with: questionElement.answers[1], delegate: self))
+        verticalStackView2.addArrangedSubview(QuestionItemCell(with: questionElement.answers[2], delegate: self))
+        verticalStackView2.addArrangedSubview(QuestionItemCell(with: questionElement.answers[3], delegate: self))
     }
     
     func setupConfigurations() {
-        questionlabel.text = questionElement.question
+        questionlabel.text = questionElement.question        
         showButtonSuccess()
     }
 }
@@ -230,5 +228,11 @@ extension PageControlViewController {
     @objc
     private func didTapSteadyButton(_ sender: Any) {
         delegate?.showSuccess()
+    }
+}
+
+extension PageControlViewController: QuestionItemCellDelegate {
+    func choose(value: Int) {
+        delegate?.chosenItem(id: questionElement.idQuestion, answerValue: value)
     }
 }

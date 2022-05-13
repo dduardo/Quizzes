@@ -8,11 +8,8 @@
 import Foundation
 import UIKit
 
-protocol QuestionsCoordinatorProtocol: Coordinator {
-    func showQuestionsViewController()
-}
+class QuestionsCoordinator: Coordinator {
 
-class QuestionsCoordinator: QuestionsCoordinatorProtocol {
     weak var finishDelegate: CoordinatorFinishDelegate?
     
     var navigationController: UINavigationController
@@ -20,32 +17,36 @@ class QuestionsCoordinator: QuestionsCoordinatorProtocol {
     var childCoordinators: [Coordinator] = []
     
     var type: CoordinatorType { .login }
-        
+    
+    private var idQuizHome: String = String()
+    
     required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
+    
+    convenience init(_ navigationController: UINavigationController, idQuizHome: String) {
+        self.init(navigationController)
+        self.idQuizHome = idQuizHome
+    }
         
     func start() {
-        showQuestionsViewController()
+        let viewModel = QuestionsViewModel(with: idQuizHome)
+        let questionsViewController: QuestionsViewController = .init(with: viewModel)
+        questionsViewController.didShowSuccess = showSuccess
+        questionsViewController.tabBarController?.tabBar.isHidden = false
+        navigationController.pushViewController(questionsViewController, animated: true)
+        navigationController.setNavigationBarHidden(false, animated: false) 
     }
     
     deinit {
         print("LoginCoordinator deinit")
     }
-    
-    func showQuestionsViewController() {
-        let questionsViewController: QuestionsViewController = .init()
-        questionsViewController.didShowSuccess = showSuccess        
-        questionsViewController.tabBarController?.tabBar.isHidden = false
-        navigationController.pushViewController(questionsViewController, animated: true)
-        navigationController.setNavigationBarHidden(false, animated: false)        
-    }
 }
 
 extension QuestionsCoordinator {
     
-    private func showSuccess() {
-        let successCoordinator = SuccessCoordinator.init(navigationController)
+    private func showSuccess(with resultQuiz: ResultQuiz) {
+        let successCoordinator = SuccessCoordinator.init(navigationController, and: resultQuiz)
         successCoordinator.finishDelegate = self
         successCoordinator.start()
         childCoordinators.append(successCoordinator)

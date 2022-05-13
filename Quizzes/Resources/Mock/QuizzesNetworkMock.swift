@@ -1,5 +1,5 @@
 //
-//  ProviderMock.swift
+//  QuizzesNetworkMock.swift
 //  Quizzes
 //
 //  Created by Carlos Eduardo Santiago on 02/05/22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ProviderMock: QuizzesNetworkProtocol {
+class QuizzesNetworkMock: QuizzesNetworkProtocol {
     
     var delaySeconds: TimeInterval
     var links: [Links: Data]?
@@ -21,7 +21,7 @@ class ProviderMock: QuizzesNetworkProtocol {
         self.links = links
     }
     
-    func request<T>(endPoint: Links, completion: @escaping CompletionDataCallback<T>) where T : Decodable {
+    func request<T>(endPoint: Links, params: Dictionary<String, Any>?, completion: @escaping CompletionDataCallback<T>) where T : Decodable {
         requestMock(link: endPoint.rawValue, completion: completion)
     }
     

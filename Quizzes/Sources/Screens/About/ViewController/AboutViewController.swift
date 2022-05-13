@@ -33,7 +33,7 @@ final class AboutViewController: UIViewController {
         super.viewDidLoad()
         title = "About"
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = .cultured
 
         view.addSubview(label)
 

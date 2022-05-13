@@ -20,11 +20,20 @@ final class SuccessCoordinator: SuccessCoordinatorProtocol {
     var childCoordinators: [Coordinator] = []
     
     var type: CoordinatorType { .login }
+    
+    var resultQuiz: ResultQuiz?
         
     required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
+       
+    convenience init(_ navigationController: UINavigationController, and resultQuiz: ResultQuiz) {
+        self.init(navigationController)
         
+        self.navigationController = navigationController
+        self.resultQuiz = resultQuiz
+    }
+    
     func start() {
         showSuccessViewController()
     }
@@ -34,9 +43,12 @@ final class SuccessCoordinator: SuccessCoordinatorProtocol {
     }
     
     func showSuccessViewController() {
-        let successViewController: SuccessViewController = .init()
+        guard let resultQuiz = resultQuiz else { return }
+        let viewModel = QuestionResultViewModel(with: resultQuiz)
+        let successViewController: SuccessViewController = .init(with: viewModel)
         successViewController.didTapClose = poptoRootViewController
         successViewController.modalPresentationStyle = .fullScreen
+        
         navigationController.present(successViewController, animated: true, completion: nil)
         navigationController.setNavigationBarHidden(false, animated: false)
         navigationController.tabBarController?.hidesBottomBarWhenPushed = false

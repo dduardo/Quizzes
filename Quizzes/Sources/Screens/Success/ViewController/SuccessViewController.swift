@@ -27,7 +27,7 @@ final class SuccessViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 8.0
-        view.backgroundColor = .orange
+        view.backgroundColor = .venetianRed
         
         return view
     }()
@@ -36,7 +36,7 @@ final class SuccessViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .center
         label.numberOfLines = .zero
-        label.font = UIFont.systemFont(ofSize: 42)
+        label.font = .systemFont(ofSize: 42)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
         
@@ -47,7 +47,7 @@ final class SuccessViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 8.0
-        view.backgroundColor = .green
+        view.backgroundColor = .cultured
         
         return view
     }()
@@ -56,7 +56,8 @@ final class SuccessViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .left
         label.numberOfLines = .zero
-        label.font = UIFont.systemFont(ofSize: 24)
+        label.font = .systemFont(ofSize: 16)
+        label.textColor = .davyGrey
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
 
@@ -65,9 +66,10 @@ final class SuccessViewController: UIViewController {
     
     private lazy var successResultDescriptionLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .left
+        label.textAlignment = .center
         label.numberOfLines = .zero
-        label.font = UIFont.systemFont(ofSize: 24)
+        label.font = .boldSystemFont(ofSize: 24)
+        label.textColor = .davyGreyLight
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
 
@@ -82,12 +84,23 @@ final class SuccessViewController: UIViewController {
         return imageView
     }()
     
+    private lazy var shareButtom: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Share", for: .normal)
+        button.setTitleColor(.cultured, for: .normal)
+        button.backgroundColor = .venetianRed
+        button.layer.cornerRadius = 8.0
+        
+        return button
+    }()
+    
     private var viewModel: QuestionResultViewModelProtocol
 
     init(with viewModel: QuestionResultViewModelProtocol = QuestionResultViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = .white
+        view.backgroundColor = .cultured
     }
 
     required init?(coder: NSCoder) {
@@ -96,7 +109,7 @@ final class SuccessViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .yellow
+        view.backgroundColor = .cultured
         setupView()
     
         bindViewModel()
@@ -105,14 +118,11 @@ final class SuccessViewController: UIViewController {
     // MARK: - Bind View Model
 
     private func bindViewModel() {
-//        bindShimmerLoading()
         bindPostResponseCallBack()
-//        bindButtonLoading()
-//        bindPostReponseCallBack()
     }
     
     private func bindPostResponseCallBack() {
-        viewModel.questionResultViewState.bind(skip: true) { [unowned self] value in
+        viewModel.questionResultViewState.bind { [unowned self] value in
             switch value {
             case .loading:
                 break
@@ -127,12 +137,12 @@ final class SuccessViewController: UIViewController {
     }
     
     private func handleSuccess() {
-        successtitleLabel.text = viewModel.model.value?.result.title
-        successResultLabel.text = viewModel.model.value?.result.descriptionResult
-        successResultDescriptionLabel.text = viewModel.model.value?.result.result
+        successtitleLabel.text = viewModel.model.value?.data?.result.title
+        successResultLabel.text = viewModel.model.value?.data?.result.descriptionResult
+        successResultDescriptionLabel.text = viewModel.model.value?.data?.result.result
         
         DispatchQueue.main.async {
-            self.imageResult.image = self.viewModel.model.value?.result.image.convertBase64StringToImage()
+            self.imageResult.image = self.viewModel.model.value?.data?.result.image.convertBase64StringToImage()
         }
     }
 }
@@ -145,6 +155,7 @@ extension SuccessViewController: ViewCode{
         contentSuccessView.addSubview(successResultLabel)
         contentSuccessView.addSubview(successResultDescriptionLabel)
         contentSuccessView.addSubview(imageResult)
+        contentSuccessView.addSubview(shareButtom)
         contentView.addSubview(contentSuccessView)
 
         view.addSubview(contentView)
@@ -152,14 +163,14 @@ extension SuccessViewController: ViewCode{
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            closeButton.widthAnchor.constraint(lessThanOrEqualToConstant: 30),
-            closeButton.heightAnchor.constraint(lessThanOrEqualToConstant: 30)
+            closeButton.widthAnchor.constraint(lessThanOrEqualToConstant: 15),
+            closeButton.heightAnchor.constraint(lessThanOrEqualToConstant: 15)
         ])
         
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
+            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 70),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -196,15 +207,28 @@ extension SuccessViewController: ViewCode{
             imageResult.widthAnchor.constraint(lessThanOrEqualToConstant: 300),
             imageResult.heightAnchor.constraint(lessThanOrEqualToConstant: 300)
         ])
+        
+        NSLayoutConstraint.activate([
+            shareButtom.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            shareButtom.leadingAnchor.constraint(equalTo: contentSuccessView.leadingAnchor, constant: 30),
+            shareButtom.trailingAnchor.constraint(equalTo: contentSuccessView.trailingAnchor, constant: -30),
+            shareButtom.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
     
     func setupConfigurations() {
         viewModel.fetchSuccess()
         closeButton.addTarget(self, action: #selector(didTapCloseButton(_:)), for: .touchUpInside)
+        shareButtom.addTarget(self, action: #selector(didTapShareButton(_:)), for: .touchUpInside)
     }
 
     @objc
     private func didTapCloseButton(_ sender: Any) {
+        didTapClose?()
+    }
+    
+    @objc
+    private func didTapShareButton(_ sender: Any) {
         didTapClose?()
     }
 }

@@ -27,14 +27,24 @@ final class QuestionResultViewModel: QuestionResultViewModelProtocol {
     
     internal var questionResultViewState = Bindable<QuestionResultViewState>(.loading)
     internal var model: Bindable<QuestionResult?> = .init(nil)
+
+    // MARK: - Private Enum
+
+    private enum QuestionResultConstants {
+        static let kIdParamKey = "idQuiz"
+        static let kResultQuizValueKey = "resultQuizValue"
+    }
     
     // MARK: - Private Vars
-    
+
+    private var resultQuiz: ResultQuiz
     private var service: QuizzesNetworkProtocol
 
     // MARK: - Initialization
     
-    public init(with service: QuizzesNetworkProtocol = ProviderMock()) {
+    public init(with resultQuiz: ResultQuiz = ("0", 0),
+                service: QuizzesNetworkProtocol = QuizzesNetwork()) {
+        self.resultQuiz = resultQuiz
         self.service = service
     }
     
@@ -53,8 +63,11 @@ extension QuestionResultViewModel {
 
     private func fetchResult() {
         self.questionResultViewState.value = .loading
+            
+        let params: [String: Any] = [QuestionResultConstants.kIdParamKey: resultQuiz.0,
+                                     QuestionResultConstants.kResultQuizValueKey: resultQuiz.1]
 
-        service.request(endPoint: .result) { [weak self] (result: NetworkResult<QuestionResult>) in
+        service.request(endPoint: .result, params: params) { [weak self] (result: NetworkResult<QuestionResult>) in
             guard let self = self else { return }
             switch result {
             case .success(let model):

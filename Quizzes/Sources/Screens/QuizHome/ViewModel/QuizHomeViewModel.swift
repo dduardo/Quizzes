@@ -36,7 +36,7 @@ final class QuizHomeViewModel: QuizHomeViewModelProtocol {
 
     // MARK: - Initialization
     
-    public init(with service: QuizzesNetworkProtocol = ProviderMock()) {
+    public init(with service: QuizzesNetworkProtocol = QuizzesNetwork()) {
         self.service = service
     }
     
@@ -54,12 +54,13 @@ extension QuizHomeViewModel {
     private func fechQuizList() {
         self.homeViewState.value = .loading
 
-        service.request(endPoint: .quizHome) { [weak self] (result: NetworkResult<QuizHeadlineModel>) in
+        service.request(endPoint: .quizHome, params: [:]) { [weak self] (result: NetworkResult<QuizHome>) in
             guard let self = self else { return }
             switch result {
             case .success(let model):
-                self.model.value = model
-                self.homeViewState.value = .loaded(model)
+                guard let modelContent = model.data else { return }
+                self.model.value = modelContent
+                self.homeViewState.value = .loaded(modelContent)
             case .failure:
                 self.homeViewState.value = .error
             }

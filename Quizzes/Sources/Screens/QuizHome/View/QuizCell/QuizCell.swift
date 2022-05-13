@@ -34,6 +34,7 @@ final class QuizCell: UITableViewCell, Identifiable {
         label.textAlignment = .left
         label.numberOfLines = .zero
         label.font = .appBoldFont(ofSize: .subTitle)
+        label.textColor = .davyGrey
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
 
@@ -59,6 +60,7 @@ final class QuizCell: UITableViewCell, Identifiable {
         label.numberOfLines = .zero
         label.textAlignment = .left
         label.font = .appRegularFont(ofSize: .normal)
+        label.textColor = .davyGreyLight
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
 
@@ -82,8 +84,6 @@ final class QuizCell: UITableViewCell, Identifiable {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
-        
-        setupView()
     }
 
     required init?(coder: NSCoder) {
@@ -92,6 +92,7 @@ final class QuizCell: UITableViewCell, Identifiable {
  
     override func awakeFromNib() {
        super.awakeFromNib()
+        
     }
     
     // MARK: - Public Methods
@@ -100,11 +101,10 @@ final class QuizCell: UITableViewCell, Identifiable {
         self.model = model
         
         setupView()
-        setupValues()
     }
     
     override func draw(_ rect: CGRect) {
-        roundImageView.image = UIImage.init(named: "panela")
+        roundImageView.image = model?.image.unescaped.convertBase64StringToImage()
         roundImageView.circularImage()
     }
 }
@@ -128,6 +128,7 @@ extension QuizCell: ViewCode {
     
     func setupConfigurations() {
         selectionStyle = .none
+        setupValues()
     }
     
     private func setupContentViewConstraints() {
@@ -143,6 +144,7 @@ extension QuizCell: ViewCode {
     private func setupValues() {
         titleLabel.text = model?.headline
         labelDescription.text = model?.quizListDescription
+   
     }
 
     private func setupRoundImageViewConstraints() {

@@ -10,13 +10,25 @@ import UIKit
 // areia rgb(220,203,181)
 
 extension UIColor {
-
+    
+    open class var venetianRed: UIColor {
+        return UIColor(red: 204, green: 21, blue: 18)
+    }
+    
+    open class var cultured: UIColor {
+        return UIColor(red: 244, green: 244, blue: 244)
+    }
+    
     open class var areia: UIColor {
         return UIColor(red: 220, green: 203, blue: 181)
     }
     
-    open class var appGreen: UIColor {
-        return UIColor(red: 1, green: 132, blue: 134)
+    open class var davyGrey: UIColor {
+        return UIColor(red: 92, green: 92, blue: 92)
+    }
+    
+    open class var davyGreyLight: UIColor {
+        return UIColor(red: 92, green: 92, blue: 92).withAlphaComponent(1)
     }
 
     convenience init(red: Int, green: Int, blue: Int, alphaValue: CGFloat = 1.0) {

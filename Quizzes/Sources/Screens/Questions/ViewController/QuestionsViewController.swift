@@ -12,7 +12,7 @@ final class QuestionsViewController: UIViewController {
     
     // MARK: - Callbacks
 
-    var didShowSuccess: (() -> Void)?
+    var didShowSuccess: ((ResultQuiz) -> Void)?
     
     // MARK: - ViewCode
     
@@ -21,6 +21,7 @@ final class QuestionsViewController: UIViewController {
         label.textAlignment = .left
         label.numberOfLines = .zero
         label.font = UIFont.boldSystemFont(ofSize: 28)
+        label.textColor = .davyGrey
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
 
@@ -32,6 +33,7 @@ final class QuestionsViewController: UIViewController {
         label.textAlignment = .left
         label.numberOfLines = .zero
         label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .davyGreyLight
         label.translatesAutoresizingMaskIntoConstraints = false
         label.lineBreakMode = .byWordWrapping
 
@@ -47,8 +49,9 @@ final class QuestionsViewController: UIViewController {
     }()
     
     private var pages: [Pages] = Pages.allCases
-    private var currentIndex: Int = 0    
+    private var currentIndex: Int = 0
     private var viewModel: QuestionsViewModelProtocol
+    private var pageControlViewControllers: [UIViewController] = []
 
     // MARK - Override and Initializers
     
@@ -77,6 +80,7 @@ final class QuestionsViewController: UIViewController {
 
     private func bindViewModel() {
         bindPostResponseCallBack()
+        bindCompletionQuiz()
     }
     
     private func bindPostResponseCallBack() {
@@ -94,16 +98,42 @@ final class QuestionsViewController: UIViewController {
         }
     }
     
-    private func handleSuccess() {
-        guard let questionDescription = viewModel.model.value?.questionDescription, let questions = viewModel.model.value?.questions[0] else { return }
-        titleLabel.text = questionDescription.headline
-        descriptionLabel.text = questionDescription.descriptionDescription
- 
-        let initialVC = PageControlViewController(with: questions, page: pages[0])
-        self.pageController.setViewControllers([initialVC], direction: .forward, animated: true, completion: nil)
+    private func bindCompletionQuiz() {
+        viewModel.completionQuiz.bind(skip: true) { [unowned self] value in
+            switch value {
+            case .succeed(let result):
+                didShowSuccess?(result)
+            case .didNotAnswerAll:
+                DispatchQueue.main.async {
+                    UIBannerView(with: "PAty", delegate: self).showBanner()
+                }
+                break
+            case .none:
+                break
+            }
+        }
     }
-
+    
+    private func handleSuccess() {
+        guard let questionDescription = viewModel.model.value?.data?.questionDescription else { return }
+        DispatchQueue.main.async {
+            self.titleLabel.text = questionDescription.headline
+            self.descriptionLabel.text = questionDescription.descriptionDescription
+            self.setupPageController()
+        }
+    }
+    
     private func setupPageController() {
+        guard let questions = viewModel.model.value?.data?.questions else { return }
+        
+        for (index, question) in questions.enumerated() {
+            let pageControl = PageControlViewController(with: pages[index], isLast: index >= questions.count - 1, questionElement: question)
+            pageControl.delegate = self
+            pageControlViewControllers.append(pageControl)
+        }
+        
+        self.pageController.setViewControllers([pageControlViewControllers[0]], direction: .forward, animated: true, completion: nil)
+        
         pageController.dataSource = self
         pageController.delegate = self
     }
@@ -150,57 +180,54 @@ extension QuestionsViewController: ViewCode {
     }
     
     func setupConfigurations() {
-        view.backgroundColor = .white
-        setupPageController()
+        view.backgroundColor = .cultured
         viewModel.fetchQuestions()
     }
 }
 
 extension QuestionsViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        
-        //Contar index no viewModel
-        
-        guard let currentVC = viewController as? PageControlViewController, let model = viewModel.model.value?.questions else {
-            return nil
-        }
-
-        var index = currentVC.page.index
-        if index == 0 {
+        guard let viewControllerIndex = pageControlViewControllers.firstIndex(of: viewController) else {
             return nil
         }
         
-        index -= 1
-
+        let previousIndex = viewControllerIndex - 1
         
-        let vc: PageControlViewController = PageControlViewController(with: model[index - 1], page: pages[index], isLast: index == self.pages.count - 1)
-        vc.delegate = self
-        return vc
+        guard previousIndex >= 0 else {
+            return nil
+        }
+        
+        guard pageControlViewControllers.count > previousIndex else {
+            return nil
+        }
+        
+        return pageControlViewControllers[previousIndex]
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        //Contar index no viewModel
-        
-        guard let currentVC = viewController as? PageControlViewController, let model = viewModel.model.value?.questions else {
+        guard let viewControllerIndex = pageControlViewControllers.firstIndex(of: viewController) else {
             return nil
         }
         
-        var index = currentVC.page.index
-        if index >= self.pages.count - 1 {
-            return nil
-        }
-        
-        index += 1
+        let nextIndex = viewControllerIndex + 1
+        let pageControlViewControllersCount = pageControlViewControllers.count
 
-        let vc: PageControlViewController = PageControlViewController(with: model[index - 1], page: pages[index], isLast: index == self.pages.count - 1)
-        vc.delegate = self
-        return vc
+        guard pageControlViewControllersCount != nextIndex else {
+            return nil
+        }
+        
+        guard pageControlViewControllersCount > nextIndex else {
+            return nil
+        }
+        
+        return pageControlViewControllers[nextIndex]
     }
 }
 
-extension QuestionsViewController: UIPageViewControllerDataSource{
+extension QuestionsViewController: UIPageViewControllerDataSource {
+
     func presentationCount(for pageViewController: UIPageViewController) -> Int {
-        return viewModel.model.value?.questions.count ?? 0
+        return pageControlViewControllers.count
     }
     
     func presentationIndex(for pageViewController: UIPageViewController) -> Int {
@@ -209,7 +236,16 @@ extension QuestionsViewController: UIPageViewControllerDataSource{
 }
 
 extension QuestionsViewController: PageVCDelegate {
-    func showSuccess() {
-        didShowSuccess?()
+
+    func chosenItem(id: String, answerValue: Int) {
+        viewModel.addChosenItem(with: id, answerValue: answerValue)
     }
+    
+    func showSuccess() {
+        viewModel.checkQuiz()
+    }
+}
+
+extension QuestionsViewController: UIBannerViewDelegate {
+    
 }

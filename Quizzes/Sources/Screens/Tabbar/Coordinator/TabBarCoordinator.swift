@@ -35,6 +35,7 @@ class TabBarCoordinator: NSObject, Coordinator {
         self.navigationController = navigationController
         self.tabBarController = .init()
         tabBarController.navigationItem.title = "Fuzz beed"
+        tabBarController.tabBar.backgroundColor = .cultured
     }
 
     func start() {
@@ -60,7 +61,7 @@ class TabBarCoordinator: NSObject, Coordinator {
         /// Let set index
         tabBarController.selectedIndex = TabBarPage.home.pageOrderNumber()
         /// Styling
-        tabBarController.tabBar.isTranslucent = false
+        tabBarController.tabBar.isTranslucent = true
         
         /// In this step, we attach tabBarController to navigation controller associated with this coordanator
         navigationController.viewControllers = [tabBarController]
@@ -128,7 +129,7 @@ extension TabBarCoordinator: CoordinatorFinishDelegate {
 extension TabBarCoordinator {
     
     func showQuestions(value: String) {
-        let coordiantor = QuestionsCoordinator.init(navigationController)
+        let coordiantor = QuestionsCoordinator.init(navigationController, idQuizHome: value)
         coordiantor.finishDelegate = self
         coordiantor.start()
         childCoordinators.append(coordiantor)        

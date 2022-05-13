@@ -22,7 +22,7 @@ final class QuizHomeViewController: UIViewController {
         tableView.estimatedRowHeight = 120
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .singleLine
-
+        tableView.backgroundColor = .clear
         return tableView
     }()
 
@@ -62,6 +62,7 @@ final class QuizHomeViewController: UIViewController {
             switch value {
             case .loading:
                 break
+                // remove model
             case .loaded(let model):
                 self.handleSuccess(with: model)
             case .error:
@@ -75,7 +76,7 @@ final class QuizHomeViewController: UIViewController {
     // MARK - Private Methods
 
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .cultured
 
         setupTableView()
     }
@@ -98,7 +99,9 @@ final class QuizHomeViewController: UIViewController {
 extension QuizHomeViewController {
     
     private func handleSuccess(with model: QuizHeadlineModel) {
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -106,7 +109,9 @@ extension QuizHomeViewController {
 
 extension QuizHomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        cellDidTapeped?("asd")
+        if let idQuizHome = viewModel.model.value?.content[indexPath.row].idQuizHome {
+            cellDidTapeped?(idQuizHome)
+        }
     }
 }
 
@@ -116,11 +121,11 @@ extension QuizHomeViewController: UITableViewDataSource {
      }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.model.value?.quizList.count ?? 0
+        return viewModel.model.value?.content.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let modelCell = viewModel.model.value?.quizList[indexPath.row], let cell = tableView.dequeueReusableCell(withIdentifier: "QuizCell", for: indexPath) as? QuizCell {
+        if let modelCell = viewModel.model.value?.content[indexPath.row], let cell = tableView.dequeueReusableCell(withIdentifier: "QuizCell", for: indexPath) as? QuizCell {
             cell.setup(with: modelCell)
             return cell
         }
