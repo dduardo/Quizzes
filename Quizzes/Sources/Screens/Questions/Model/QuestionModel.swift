@@ -58,9 +58,9 @@ struct QuestionElement: Codable {
 }
 
 // MARK: - Answer
-struct Answer: Codable {
+class Answer: Codable {
     let image: String
     let option: String
     let value: Int
+    var isSelected: Bool?
 }
-

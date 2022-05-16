@@ -74,7 +74,6 @@ extension QuestionResultViewModel {
                 self.model.value = model
                 self.questionResultViewState.value = .loaded
             case .failure(let error):
-                print(error)
                 self.questionResultViewState.value = .error
             }
         }

@@ -59,8 +59,6 @@ extension SuccessCoordinator {
     
     private func popViewController() {
         finish()
-//        navigationController.popViewController(animated: false)
-//        poptoRootViewController()
     }
     
     private func poptoRootViewController() {

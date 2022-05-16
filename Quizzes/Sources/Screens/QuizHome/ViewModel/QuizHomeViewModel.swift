@@ -9,14 +9,12 @@ import Foundation
 
 enum HomeViewState {
     case loading
-    //Remover model
     case loaded(QuizHeadlineModel)
     case emptyState
     case error
 }
 
 protocol QuizHomeViewModelProtocol {
-//    var getResponseCallBack: Bindable<GetHomeQuizzesCallBack?> { get }
     var homeViewState: Bindable<HomeViewState> { get }
     var model: Bindable<QuizHeadlineModel?> { get }
     

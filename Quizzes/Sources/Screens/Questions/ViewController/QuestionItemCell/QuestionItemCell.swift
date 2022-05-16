@@ -27,8 +27,7 @@ final class QuestionItemCell: UIView, Identifiable {
         view.layer.borderWidth = 1.0
         view.layer.masksToBounds = false
         view.layer.borderColor = UIColor.darkGray.cgColor.copy(alpha: 1)
-    
-        
+
         return view
     }()
 
@@ -111,6 +110,18 @@ extension QuestionItemCell: ViewCode {
     }
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
+        checkIsSelected()
         delegate.choose(value: answer.value)
+    }
+}
+
+extension QuestionItemCell {
+    
+    private func checkIsSelected() {
+        if !(answer.isSelected ?? false) {
+            contentView.backgroundColor = .darkGray
+        } else {
+            contentView.backgroundColor = .lightGray
+        }
     }
 }

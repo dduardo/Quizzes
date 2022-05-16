@@ -18,8 +18,6 @@ enum TabBarPage {
             self = .home
         case 1:
             self = .about
-//        case 2:
-//            self = .go
         default:
             return nil
         }
@@ -31,8 +29,6 @@ enum TabBarPage {
             return "Home"
         case .about:
             return "About"
-//        case .go:
-//            return "Go"
         }
     }
 
@@ -42,14 +38,6 @@ enum TabBarPage {
             return 0
         case .about:
             return 1
-//        case .go:
-//            return 2
         }
     }
-
-    // Add tab icon value
-    
-    // Add tab icon selected / deselected color
-    
-    // etc
 }

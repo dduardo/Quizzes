@@ -35,10 +35,6 @@ class QuizHomeCoordinator: QuizHomeCoordinatorProtocol {
     
     func showQuizHomeViewController() {
         let quizHomeViewController: QuizHomeViewController = .init()
-//        quizHomeViewController.didSendEventClosure = { [weak self] event in
-//            self?.finish()
-//        }
-
         navigationController.pushViewController(quizHomeViewController, animated: true)
     }
 }

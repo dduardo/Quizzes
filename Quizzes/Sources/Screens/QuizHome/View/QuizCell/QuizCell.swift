@@ -137,7 +137,7 @@ extension QuizCell: ViewCode {
             contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: 90)
+            contentView.heightAnchor.constraint(equalToConstant: 120)
         ])
     }
     

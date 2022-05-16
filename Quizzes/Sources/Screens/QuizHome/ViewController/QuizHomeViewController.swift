@@ -9,8 +9,6 @@ import UIKit
 
 final class QuizHomeViewController: UIViewController {
 
-//    var detailsCallback: ((String, FormalizationTypes) -> Void)?
-//    var erroCallback: ((GenericErrorTypes, (() -> Void)?) -> Void)?
     var cellDidTapeped: ((String) -> Void)?
 
     // MARK - Private Properties
@@ -51,10 +49,7 @@ final class QuizHomeViewController: UIViewController {
     // MARK: - Bind View Model
 
     private func bindViewModel() {
-//        bindShimmerLoading()
         bindGetResponseCallBack()
-//        bindButtonLoading()
-//        bindPostReponseCallBack()
     }
 
     private func bindGetResponseCallBack() {
@@ -62,7 +57,6 @@ final class QuizHomeViewController: UIViewController {
             switch value {
             case .loading:
                 break
-                // remove model
             case .loaded(let model):
                 self.handleSuccess(with: model)
             case .error:

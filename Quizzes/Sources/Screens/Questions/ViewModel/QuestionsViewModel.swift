@@ -106,7 +106,6 @@ extension QuestionsViewModel {
                 self.model.value = model
                 self.questionsViewState.value = .loaded
             case .failure(let error):
-                print(error)
                 self.questionsViewState.value = .error
             }
         }
